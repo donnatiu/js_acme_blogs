@@ -4,6 +4,8 @@
 
 **Start by clicking the Remix on Glitch button above.**
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/5a2ff504-1e32-4b51-8c65-869331d13fb5/deploy-status)](https://app.netlify.com/sites/objective-poitras-d93b32/deploys)
+
 _Once you are working with your own copy of the project on Glitch..._
 
 **Follow the directions available in Blackboard** 
