@@ -1,4 +1,4 @@
-
+const BASE_API_URL = "https://jsonplaceholder.typicode.com/";
 
 /*
 1. createElemWithText
@@ -13,14 +13,14 @@
     i. Return the created element.
 */
 
-const createElemWithText = (newElement = "p", newTextContent = "", newClassName) => {
-    const addElement = document.createElement(newElement);
-    addElement.textContent = newTextContent;
-    if(newClassName) {
-        addElement.classList.add(newClassName);
+function createElemWithText(element = "p", textContent = "", className) {
+    let elem = document.createElement(element);
+    elem.textContent = textContent;
+    if (className) {
+        elem.setAttribute("class", className);
     }
-    return addElement;
-};
+    return elem;
+}
 
 
 /*
@@ -36,19 +36,19 @@ const createElemWithText = (newElement = "p", newTextContent = "", newClassName)
     i. Return an array of options elements
 */
 
-const createSelectOptions = (data) => {
-    if(typeof data === "undefined") {
+function createSelectOptions(users) {
+    if (users == undefined || users == null) {
         return undefined;
     }
-    const options = [];
-    data.forEach((datum) => {
-        datum.option = document.createElement("option");
-        datum.option.value = datum.id;
-        datum.option.textContent = datum.name;
-        options.push(datum.option);
+    let options = [];
+    users.forEach((user) => {
+        let option = document.createElement("option");
+        option.setAttribute("value", user.id);
+        option.textContent = user.name;
+        options.push(option);
     });
     return options;
-};
+}
 
 
 /*
@@ -64,17 +64,12 @@ const createSelectOptions = (data) => {
     f. Return the section element
 */
 
-const toggleCommentSection = (newPostId) => {
-    if(!newPostId) {
-        return undefined;
-    }
-    const section = document.querySelector(`section[data-post-id='${newPostId}']`);
-    if(!(section)) {
-        return null;
-    }
-    section.classList.toggle("hide");
-    return section;  
-};
+function toggleCommentSection(postId) {
+    if (postId == undefined || postId == null) return undefined;
+    let element = document.querySelector(`section[data-post-id="${postId}"]`);
+    if (element) element.classList.toggle("hide");
+    return element;
+}
 
 
 /*
@@ -90,17 +85,17 @@ const toggleCommentSection = (newPostId) => {
     f. Return the button element
 */
 
-const toggleCommentButton = (newPostId) => {
-    if(!newPostId) {
-        return undefined;
+function toggleCommentButton(postId) {
+    if (postId == undefined || postId == null) return undefined;
+    let element = document.querySelector(`button[data-post-id="${postId}"]`);
+    if (element) {
+        element.textContent =
+            element.textContent == "Show Comments"
+                ? "Hide Comments"
+                : "Show Comments";
     }
-    const myButton = document.querySelector(`button[data-post-id='${newPostId}']`);
-    if(!myButton) {
-        return null;
-    }
-    myButton.textContent = (myButton.textContent === "Show Comments" ? "Hide Comments" : "Show Comments");
-    return myButton;
-};
+    return element;
+}
 
 
 /*
@@ -113,31 +108,19 @@ const toggleCommentButton = (newPostId) => {
     f. Return the parentElement
 */
 
-const deleteChildElements = (parentElement) => {
-    if(!(parentElement instanceof HTMLElement)) {
+function deleteChildElements(parentElement) {
+    if (!parentElement?.tagName) {
         return undefined;
     }
-    let child = parentElement.lastElementChild;
-    while(child){
-        parentElement.removeChild(child);
-        child = parentElement.lastElementChild;
-    }
-    return parentElement;
-};
 
-/*
-const deleteChildElements = (parentElement) => {
-    if(!parentElement?.tagName) {
-        return undefined;
-    }
     let child = parentElement.lastElementChild;
-    while(child){
+    while (child) {
         parentElement.removeChild(child);
         child = parentElement.lastElementChild;
     }
     return parentElement;
-};
-*/
+}
+
 
 /*
 NOTE: The above functions had no dependency on other functions. They were very
@@ -161,38 +144,21 @@ dependencies as we go. The next several functions have small dependencies.
     will pass for addButtonListeners until toggleComments exists. I recommend
     waiting on the logic inside the toggleComments function until we get there.
 */
-/*
-const addButtonListeners = () => {
-    const buttonNodes = document.getElementsByTagName('main')[0].querySelectorAll('button');
-    buttonNodes.forEach((button) => {
-        const postId = button.dataset.id;
-        button.addEventListener(
-            "click", 
-            function (e) {
-                toggleComments(e, postId);
-            }, 
-            false);
-    });
-    return buttonNodes;
-};
-*/
-const addButtonListeners = () => {
-    const buttonNodes = document.getElementsByTagName('main')[0].querySelectorAll('button');
-    
-    for(let i = 0; i < buttonNodes.length; i++) {
-        const button = buttonNodes[i];
-        
-        const postId = button.dataset.id;
 
+function addButtonListeners() {
+    let buttons = document.querySelector("main").querySelectorAll("button");
+    buttons.forEach((button) => {
         button.addEventListener(
-            "click", 
+            "click",
             function (e) {
-                toggleComments(e, postId);
-            }, 
-            false);
-    }
-    return buttonNodes;
-};
+                toggleComments(e, button.dataset.postId);
+            },
+            false
+        );
+        //console.log(button);
+    });
+    return buttons;
+}
 
 /*
 7. removeButtonListeners
@@ -204,38 +170,22 @@ const addButtonListeners = () => {
     e. Refer to the addButtonListeners function as this should be nearly identical
     f. Return the button elements which were selected
 */
-/*
-const removeButtonListeners = () => {
-    const buttonNodes = document.getElementsByTagName('main')[0].querySelectorAll('button');
-    buttonNodes.forEach((button) => {
-        const postId = button.dataset.id;
+
+function removeButtonListeners() {
+    let buttons = document.querySelector("main").querySelectorAll("button");
+    buttons.forEach((button) => {
         button.removeEventListener(
-            "click", 
+            "click",
             function (e) {
-                toggleComments(e, postId);
-            }, 
-            false);
+                toggleComments(e, button.dataset.postId);
+            },
+            false
+        );
+        //console.log(button);
     });
-    return buttonNodes;
-};
-*/
-const removeButtonListeners = () => {
-    const buttonNodes = document.getElementsByTagName('main')[0].querySelectorAll('button');
-    
-    for(let i = 0; i < buttonNodes.length; i++) {
-        const button = buttonNodes[i];
+    return buttons;
+}
 
-        const postId = button.dataset.id;
-
-        button.removeEventListener(
-            "click", 
-            function (e) {
-                toggleComments(e, postId);
-            }, 
-            false);
-    }
-    return buttonNodes;
-};
 
 /*
 8. createComments
@@ -269,6 +219,7 @@ const createComments = (commentData) => {
     });
     return fragment;
 };
+
 
 /*
 9. populateSelectMenu
@@ -497,16 +448,11 @@ const createPosts = async(jsonPostData) => {
 */
 
 const displayPosts = async(posts) => {
-    
-    if(!(posts)) {
-        return document.getElementsByTagName('p')[0];
-    }
-    
-    const myMain = document.getElementsByTagName('main')[0];
-    const element = (posts ? await createPosts(posts) : createElemWithText("p", document.getElementsByTagName('p')[0]));
+    const myMain = document.querySelector('main');
+    const element = (posts) ? (await createPosts(posts)) : (createElemWithText("p", "Select an Employee to display their posts.", "default-text"));
     myMain.append(element);
     return element;
-};
+}
 
 
 /*
@@ -565,6 +511,7 @@ const refreshPosts = async(postData) => {
     if(!(postData)) {
         return undefined;
     }
+
     const removeButtons = removeButtonListeners();
     const main = deleteChildElements(document.getElementsByTagName('main')[0]);
     const fragment = await displayPosts(postData);
@@ -589,18 +536,15 @@ const refreshPosts = async(postData) => {
 
 const selectMenuChangeEventHandler = async(event) => {
     
-    /*
     const selectMenu = document.querySelector('select');
     selectMenu.disabled = true;
-    */
+
 
     const userId = event?.target?.value || 1;
     const posts = await getUserPosts(userId);
     const refreshPostsArray = await refreshPosts(posts);
 
-    /*
     selectMenu.disabled = false;
-    */
 
     return [userId, posts, refreshPostsArray];
 };
@@ -641,10 +585,7 @@ However, I can only test if the initApp function exists. It does not return anyt
 const initApp = () => {
     initPage();
     const selectMenu = document.getElementById("selectMenu");
-    selectMenu.addEventListener("change", (event) => {
-        selectMenuChangeEventHandler();
-    });
-
+    selectMenu.addEventListener("change", selectMenuChangeEventHandler, false);
 };
 
 
